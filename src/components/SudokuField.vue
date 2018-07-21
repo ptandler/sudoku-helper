@@ -2,6 +2,7 @@
     <td :class="{ field: true,
         active: model.active,
         highlighted: model.highlighted,
+        error: model.error,
         predefined: model.predefined,
         notDefined: ! model.hasDefinedValue()
         }"
@@ -32,15 +33,18 @@
         background: yellow !important;
         font-weight: bold;
     }
-
     .highlighted {
         background: lightyellow;
     }
-
+    .error {
+        color: red;
+        // text-decoration: underline red;
+        border: 3px solid red;
+    }
     .predefined {
         font-weight: bold;
+        background: lavenderblush;
     }
-
     .notDefined {
         font-size: xx-small;
     }

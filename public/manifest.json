@@ -1,6 +1,7 @@
 {
   "name": "sudoku-helper",
   "short_name": "sudoku-helper",
+  "description": "A simple helper to solve sudoku puzzles :-)",
   "icons": [
     {
       "src": "/img/icons/android-chrome-192x192.png",

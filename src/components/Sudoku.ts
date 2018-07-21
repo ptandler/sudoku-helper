@@ -74,14 +74,44 @@ export class Sudoku {
         this.getModel(x, y).setActive();
     }
 
-    public setValueOfActiveCell(v: string) {
+    public getActiveCells() {
+        const result = [];
         for (let row of sudokuValues) {
             for (let col of sudokuValues) {
                 const m = this.getModel(row, col);
                 if (m.active) {
-                    m.setValue(parseInt(v, 10));
+                    result.push(m);
                 }
             }
+        }
+        return result;
+    }
+
+    public setValueOfActiveCell(v: string) {
+        for (let m of this.getActiveCells()) {
+            m.setValue(parseInt(v, 10));
+        }
+    }
+
+    public showErrors() {
+        for (let row of sudokuValues) {
+            for (let col of sudokuValues) {
+                const m = this.getModel(row, col);
+                m.error = false;
+            }
+        }
+
+        for (let row of this.rows) {
+            console.log(`validate row ${row}`);
+            row.showErrors();
+        }
+        for (let col of this.cols) {
+            console.log(`validate col ${col}`);
+            col.showErrors();
+        }
+        for (let square of this.squares) {
+            console.log(`validate square ${square}`);
+            square.showErrors();
         }
     }
 }
@@ -91,6 +121,7 @@ export class SudokuFieldModel {
     public active: boolean = false;
     public highlighted: boolean = false;
     public predefined: boolean = false;
+    public error: boolean = false;
 
     constructor(
         public x: SudokuValue,
@@ -147,7 +178,7 @@ export class SudokuFieldModel {
         if (this.hasDefinedValue()) {
             return this.value.toString();
         } else {
-            return "....";
+            return this.value.join(" ");
         }
     }
 }
@@ -165,5 +196,27 @@ export class SudokuCollection {
 
     public get(i: number /*SudokuValue*/) {
         return this.list[i];
+    }
+
+    public showErrors() {
+        const counter: SudokuFieldModel[][] = [];
+        for (let i of sudokuValues) {
+            counter[i] = [];
+        }
+        for (let i of sudokuValues) {
+            if (this.list[i]) {
+                const v = this.list[i].hasDefinedValue();
+                if (v) {
+                    counter[v].push(this.list[i]);
+                }
+            }
+        }
+        for (let i of sudokuValues) {
+            if (counter[i].length > 1) {
+                for (let m of counter[i]) {
+                    m.error = true;
+                }
+            }
+        }
     }
 }
