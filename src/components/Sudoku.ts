@@ -93,25 +93,46 @@ export class Sudoku {
         }
     }
 
-    public showErrors() {
+    public hideErrors() {
         for (let row of sudokuValues) {
             for (let col of sudokuValues) {
                 const m = this.getModel(row, col);
                 m.error = false;
             }
         }
+    }
 
+    public showErrors() {
+        this.hideErrors();
         for (let row of this.rows) {
-            console.log(`validate row ${row}`);
+            // console.log(`validate row ${row}`);
             row.showErrors();
         }
         for (let col of this.cols) {
-            console.log(`validate col ${col}`);
+            // console.log(`validate col ${col}`);
             col.showErrors();
         }
         for (let square of this.squares) {
-            console.log(`validate square ${square}`);
+            // console.log(`validate square ${square}`);
             square.showErrors();
+        }
+    }
+
+    // load and save
+
+    public asJSON(): string {
+        return JSON.stringify(this.matrix);
+    }
+
+    public loadFromJSON(json: string) {
+        const input = JSON.parse(json);
+        for (let row of sudokuValues) {
+            for (let col of sudokuValues) {
+                const m = this.getModel(row, col);
+                const cell = input[row - 1][col - 1];
+                m.value = cell.value;
+                m.predefined = cell.predefined;
+            }
         }
     }
 }
@@ -143,6 +164,10 @@ export class SudokuFieldModel {
         } else {
             console.error(`setValue(${v}) is not instanceof SudokuValue`);
         }
+    }
+
+    public removeDefinedValue() {
+        this.value = sudokuValues.slice(0);
     }
 
     public hasDefinedValue(): SudokuValue | null {
@@ -180,6 +205,17 @@ export class SudokuFieldModel {
         } else {
             return this.value.join(" ");
         }
+    }
+
+    /**
+     * this is used by JSON.stringify to export only the public fields
+     * @return {object}
+     */
+    public toJSON(): object {
+        return {
+            value: this.value,
+            predefined: this.predefined,
+        };
     }
 }
 

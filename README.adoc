@@ -1,0 +1,32 @@
+= sudoku-helper
+
+Goal of this project:
+
+1. I wanted a sample project to learn Vue.js and Typescript
+2. Do something I like while my family solves Sudokus ...
+3. A tool that can help interactively with complicated Sudoku puzzles
+
+== Related Projects
+
+- https://github.com/dachev/sudoku
+- https://github.com/hhelwich/sudoku-js
+
+== Project setup
+```
+yarn install
+```
+
+=== Compiles and hot-reloads for development
+```
+yarn run serve
+```
+
+=== Compiles and minifies for production
+```
+yarn run build
+```
+
+=== Lints and fixes files
+```
+yarn run lint
+```
