@@ -4,6 +4,7 @@
         highlighted: model.highlighted,
         error: model.error,
         predefined: model.predefined,
+        defined: model.hasDefinedValue(),
         notDefined: ! model.hasDefinedValue()
         }"
         v-on:click="activate"
@@ -31,7 +32,6 @@
 <style scoped lang="scss">
     .active {
         background: yellow !important;
-        font-weight: bold;
     }
     .highlighted {
         background: lightyellow;
@@ -42,8 +42,12 @@
         border: 3px solid red;
     }
     .predefined {
+        font-size: large;
+        // font-weight: bold;
+        background: lighten(lightgray, 12%);
+    }
+    .defined {
         font-weight: bold;
-        background: lavenderblush;
     }
     .notDefined {
         font-size: xx-small;

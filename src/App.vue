@@ -1,8 +1,13 @@
 <template>
     <div id="app" class="container">
         <div class="row">
-            <div class="col-12 col-lg-8">
-                <h1>Sudoku Helper :-)</h1>
+            <div class="col-12">
+                <h1>Sudoku for Dummies</h1>
+                <p class="text-info">Get help to solve your Sudoku!</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-9">
                 <table class="sudoku"
                        tabindex="1"
                        @keypress="onKeypress">
@@ -14,29 +19,41 @@
                         />
                     </tr>
                 </table>
+                <br/>
+                <b-button-toolbar>
+                    <b-button-group>
+                        <b-button v-b-toggle.help>?</b-button>
+                        <br/>
+                        <b-button @click="saveGame">Save to Local Storage</b-button>
+                        <b-button @click="loadGame">Load from Local Storage</b-button>
+                        <b-button @click="showJSON" v-if="!exportedJSON">Show as JSON</b-button><b-button @click="hideJSON" v-else>Hide JSON</b-button>
+                        <b-button @click="resetGame">Clear</b-button>
+                    </b-button-group>
+                </b-button-toolbar>
+                <b-collapse id="help">
+                    <b-card>
+                        <p class="card-text text-left">
+                            Keyboard:<br/>
+                            1 ... 9: Change value of selected cell<br/>
+                            0: remove entered value of selected cell<br/>
+                            d: Mark cell as "predefined" (defined in the puzzle not by user)
+                        </p>
+                    </b-card>
+                </b-collapse>
             </div>
-            <div class="col-12 col-lg-4">
-                <br/>
-                <b-button @click="toggleHelp">?</b-button>
-                <b-button @click="showErrors">Show Errors</b-button>
-                <br/>
-                <b-button @click="saveGame">Save to Local Storage</b-button>
-                <b-button @click="loadGame">Load from Local Storage</b-button>
-                <b-button @click="showJSON" v-if="!exportedJSON">Show as JSON</b-button><b-button @click="hideJSON" v-if="exportedJSON">Hide JSON</b-button>
+            <div class="col-12 col-md-3">
+                <b-button-toolbar>
+                    <b-button-group vertical >
+                        <b-button @click="showErrors">Show Errors</b-button>
+                        <b-button @click="updatePossibleValues">Update Possible Values</b-button>
+                        <b-button @click="assignAllCellsWithSinglePossibleValue">Assign all Cells with Single Possible Value</b-button>
+                        <b-button @click="assignAllSinglePossibleValueInCollections">Assign Cells that have a Single Possible Value in all collections</b-button>
+                    </b-button-group>
+                </b-button-toolbar>
             </div>
             <!-- export -->
             <div class="col-12" v-if="exportedJSON">
                 {{ exportedJSON }}
-            </div>
-            <!-- help text -->
-            <div class="col-12" v-if="showHelp">
-                <br/>
-                <p class="text-left">
-                    Keys:<br/>
-                    1 ... 9: Change value of selected cell<br/>
-                    0: remove entered value of selected cell<br/>
-                    d: Mark cell as "predefined" (defined in the puzzle not by user)
-                </p>
             </div>
         </div>
     </div>
@@ -46,89 +63,103 @@
     import {Component, Vue} from 'vue-property-decorator';
     import SudokuField from './components/SudokuField';
     import {SudokuValue, sudokuValues, Sudoku} from './components/Sudoku';
+    import SudokuHelper from './components/SudokuHelper';
 
     @Component({
         components: {
             SudokuField,
         },
-        methods: {
-            getModel(x: SudokuValue, y: SudokuValue) {
-                return this.sudoku.getModel(x, y);
-            },
-            clearActive() {
-                this.sudoku.clearActive();
-            },
-            onKeypress(event) {
-                // console.log(event);
-                if (event.key >= "1" && event.key <= "9") {
-                    this.hideErrors(); // this is no longer valid
-                    this.sudoku.setValueOfActiveCell(event.key);
-                    return;
-                }
-                if (event.key == "0") {
-                    this.hideErrors(); // this is no longer valid
-                    for (let m of this.sudoku.getActiveCells()) {
-                        m.removeDefinedValue();
-                    }
-                }
-                if (event.key === "d") {
-                    for (let m of this.sudoku.getActiveCells()) {
-                        m.predefined = !m.predefined;
-                    }
-                    return;
-                }
-            },
-            showErrors() {
-                this.sudoku.showErrors();
-            },
-
-            saveGame() {
-                const json = this.sudoku.asJSON();
-                localStorage.setItem('currentGame', json);
-            },
-
-            loadGame() {
-                try {
-                    const json = localStorage.getItem('currentGame');
-                    if (json) {
-                        this.sudoku.loadFromJSON(json);
-                    }
-                } catch (e) {
-                    console.error(e);
-                }
-            },
-
-            showJSON() {
-                this.exportedJSON = this.sudoku.asJSON();
-            },
-            hideJSON() {
-                this.exportedJSON = null;
-            },
-
-            toggleHelp() {
-                this.showHelp = !this.showHelp;
-            }
-        },
-        data: () => {
-            const sudoku = new Sudoku();
-
-            const data = {
-                sudoku,
-                showHelp: false,
-                exportedJSON: null,
-                values: sudokuValues
-            };
-            console.log(data);
-            return data;
-        },
     })
     export default class App extends Vue {
+        sudoku = new Sudoku();
+        helper = new SudokuHelper(this.sudoku);
+        showHelp = false;
+        exportedJSON = null;
+        values = sudokuValues;
+
+        constructor() {
+            super();
+            console.log(this);
+        }
+
+        getModel(x: SudokuValue, y: SudokuValue) {
+            return this.sudoku.getModel(x, y);
+        }
+        clearActive() {
+            this.sudoku.clearActive();
+        }
+        onKeypress(event) {
+            // console.log(event);
+            if (event.key >= "1" && event.key <= "9") {
+                this.sudoku.hideErrors(); // this is no longer valid
+                this.sudoku.setValueOfActiveCell(event.key);
+                return;
+            }
+            if (event.key == "0") {
+                this.sudoku.hideErrors(); // this is no longer valid
+                for (let m of this.sudoku.getActiveCells()) {
+                    m.removeDefinedValue();
+                }
+            }
+            if (event.key === "d") {
+                for (let m of this.sudoku.getActiveCells()) {
+                    m.predefined = !m.predefined;
+                }
+                return;
+            }
+        }
+
+        // helper functions
+        showErrors() {
+            this.sudoku.showErrors();
+        }
+        updatePossibleValues() {
+            this.helper.updatePossibleValues();
+        }
+        assignAllCellsWithSinglePossibleValue() {
+            this.helper.assignAllCellsWithSinglePossibleValue();
+        }
+        assignAllSinglePossibleValueInCollections() {
+            this.helper.assignAllSinglePossibleValueInCollections();
+        }
+
+        // organization functions
+        saveGame() {
+            const json = this.sudoku.asJSON();
+            localStorage.setItem('currentGame', json);
+        }
+        loadGame() {
+            try {
+                const json = localStorage.getItem('currentGame');
+                if (json) {
+                    this.sudoku.clearActive();
+                    this.sudoku.loadFromJSON(json);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        resetGame() {
+            this.sudoku.reset();
+        }
+
+        showJSON() {
+            this.exportedJSON = this.sudoku.asJSON();
+        }
+        hideJSON() {
+            this.exportedJSON = null;
+        }
+
+        toggleHelp() {
+            this.showHelp = !this.showHelp;
+        }
     }
 </script>
 
 <style lang="scss">
+    @import url('https://fonts.googleapis.com/css?family=PT+Sans');
     #app {
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
+        font-family: 'PT Sans', 'Droid Sans', Helvetica, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-align: center;
@@ -143,8 +174,8 @@
         td {
             border: 1px solid gray;
             padding: 3px;
-            width: 6ex;
-        }
+            width: 50px;
+            height: 50px;        }
 
         // make the bold lines for squares
         td:first-child {
@@ -158,6 +189,16 @@
         }
         tr:nth-child(3n) td {
             border-bottom-width: 3px;
+        }
+    }
+
+    button {
+        margin: 5px !important; // todo I thought bootstrap has a default margin for buttons ...?
+    }
+    // format of the vertial toolbar for rules
+    .btn-group-vertical {
+        button {
+            white-space: normal;
         }
     }
 </style>

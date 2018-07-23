@@ -4,7 +4,32 @@ Goal of this project:
 
 1. I wanted a sample project to learn Vue.js and Typescript
 2. Do something I like while my family solves Sudokus ...
-3. A tool that can help interactively with complicated Sudoku puzzles
+3. A tool that can help interactively with complicated Sudoku puzzles, and helping me understand how far one gets while applying certain rules when solving a sudoku.
+
+== Features
+
+- highlighting of the corresponding "collections" (i.e. a row, column, or square) a selected cell is contained in
+- save and load the game state
+- highligt errors
+
+=== Solution rules / heuristics that can be applied automatically
+
+_Well, yes, one might ask, what's the point when the App automatically applies the rules ... for me the fun is more in coding :-)_
+
+- Update the list of possible values in each cell (check that the rules all apply)
+- Assign all Cells with Single Possible Value (i.e. a list of possible values that has the length 1.
+- Assign Cells that have a Single Possible Value in all collections, i.e. check all rows, columns, and squares if there is a single position where a given value can be placed
+
+== ToDo-List / Ideas for Improvement
+
+- Animation if the value of a cell changes
+- Load and Save multiple games
+- add buttons / functions for more rules / heuristics
+- add support for touch-only devices to use without keyboard
+- auto mode: with Ctrl-Click on (some) buttons, automatically exec this action as soon as a value is changed (recursively); the button stays in the "pressed" mode then; will be deselected upon next click
+- show missing numbers in UI per row, col, square
+- buttons to highlight a specific value (e.g. all cells with value "1")
+- include one of the sudoku generators (that can specify how easy / hard it should be)
 
 == Related Projects
 

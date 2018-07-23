@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 export type SudokuValue = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 export const sudokuValues: SudokuValue[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -14,6 +16,14 @@ export class Sudoku {
         const i = (x - 1) % 3 * 3 + (y - 1) % 3 + 1;
         // console.log(`getIndexInSquare(${x},${y}) = ${i}`);
         return i;
+    }
+
+    public static isSudokuValue(v: number | SudokuValue[]): v is SudokuValue {
+        return typeof v === 'number' && v >= 1 && v <= 9;
+    }
+
+    public static isSudokuValueList(v: number | SudokuValue[]): v is SudokuValue[] {
+        return Array.isArray(v) && _.every(v, Sudoku.isSudokuValue);
     }
 
     public rows: SudokuCollection[] = [];
@@ -62,8 +72,8 @@ export class Sudoku {
     }
 
     public clearActive() {
-        for (let row of sudokuValues) {
-            for (let col of sudokuValues) {
+        for (const row of sudokuValues) {
+            for (const col of sudokuValues) {
                 this.getModel(row, col).setInactive();
             }
         }
@@ -76,8 +86,8 @@ export class Sudoku {
 
     public getActiveCells() {
         const result = [];
-        for (let row of sudokuValues) {
-            for (let col of sudokuValues) {
+        for (const row of sudokuValues) {
+            for (const col of sudokuValues) {
                 const m = this.getModel(row, col);
                 if (m.active) {
                     result.push(m);
@@ -88,14 +98,14 @@ export class Sudoku {
     }
 
     public setValueOfActiveCell(v: string) {
-        for (let m of this.getActiveCells()) {
+        for (const m of this.getActiveCells()) {
             m.setValue(parseInt(v, 10));
         }
     }
 
     public hideErrors() {
-        for (let row of sudokuValues) {
-            for (let col of sudokuValues) {
+        for (const row of sudokuValues) {
+            for (const col of sudokuValues) {
                 const m = this.getModel(row, col);
                 m.error = false;
             }
@@ -104,21 +114,30 @@ export class Sudoku {
 
     public showErrors() {
         this.hideErrors();
-        for (let row of this.rows) {
+        for (const row of this.rows) {
             // console.log(`validate row ${row}`);
             row.showErrors();
         }
-        for (let col of this.cols) {
+        for (const col of this.cols) {
             // console.log(`validate col ${col}`);
             col.showErrors();
         }
-        for (let square of this.squares) {
+        for (const square of this.squares) {
             // console.log(`validate square ${square}`);
             square.showErrors();
         }
     }
 
-    // load and save
+    // reset, load and save
+
+    public reset() {
+        for (const row of sudokuValues) {
+            for (const col of sudokuValues) {
+                const m = this.getModel(row, col);
+                m.reset();
+            }
+        }
+    }
 
     public asJSON(): string {
         return JSON.stringify(this.matrix);
@@ -126,8 +145,8 @@ export class Sudoku {
 
     public loadFromJSON(json: string) {
         const input = JSON.parse(json);
-        for (let row of sudokuValues) {
-            for (let col of sudokuValues) {
+        for (const row of sudokuValues) {
+            for (const col of sudokuValues) {
                 const m = this.getModel(row, col);
                 const cell = input[row - 1][col - 1];
                 m.value = cell.value;
@@ -139,9 +158,9 @@ export class Sudoku {
 
 export class SudokuFieldModel {
     public value: SudokuValue | SudokuValue[];
+    public predefined: boolean = false;
     public active: boolean = false;
     public highlighted: boolean = false;
-    public predefined: boolean = false;
     public error: boolean = false;
 
     constructor(
@@ -158,6 +177,13 @@ export class SudokuFieldModel {
         square.set(Sudoku.getIndexInSquare(x, y), this);
     }
 
+    public reset() {
+        this.value = sudokuValues.slice(0);
+        this.predefined = false;
+        this.active = false;
+        this.highlighted = false;
+        this.error = false;
+    }
     public setValue(v: number) {
         if (v >= 1 && v <= 9) {
             this.value = v as SudokuValue;
@@ -171,11 +197,26 @@ export class SudokuFieldModel {
     }
 
     public hasDefinedValue(): SudokuValue | null {
-        if (this.value instanceof Array) {
-            return null;
-        } else {
+        if (Sudoku.isSudokuValue(this.value)) {
             return this.value;
+        } else {
+            return null;
         }
+    }
+
+    /**
+     * returns true, if this cell is either `val` or it containts `val` as possible value
+     * @param {SudokuValue} val
+     * @return {boolean}
+     */
+    public containsValue(val: SudokuValue): boolean {
+        if (Sudoku.isSudokuValue(this.value)) {
+            return this.value === val;
+        }
+        if (Sudoku.isSudokuValueList(this.value)) {
+            return _.includes(this.value, val);
+        }
+        return false;
     }
 
     /**
@@ -183,7 +224,7 @@ export class SudokuFieldModel {
      */
     public setActive() {
         this.active = true;
-        for (let i of sudokuValues) {
+        for (const i of sudokuValues) {
             this.row.get(i).setHighlighted();
             this.col.get(i).setHighlighted();
             this.square.get(i).setHighlighted();
@@ -200,11 +241,11 @@ export class SudokuFieldModel {
     }
 
     public toString(): string {
-        if (this.hasDefinedValue()) {
-            return this.value.toString();
-        } else {
-            return this.value.join(" ");
+        const v = this.value;
+        if (Sudoku.isSudokuValueList(v)) {
+            return v.join(' ');
         }
+        return v.toString();
     }
 
     /**
@@ -234,12 +275,16 @@ export class SudokuCollection {
         return this.list[i];
     }
 
-    public showErrors() {
+    /**
+     * return an array that lists for each value the models with this value
+     * @return {SudokuFieldModel[][]}
+     */
+    public getModelsByValue() {
         const counter: SudokuFieldModel[][] = [];
-        for (let i of sudokuValues) {
+        for (const i of sudokuValues) {
             counter[i] = [];
         }
-        for (let i of sudokuValues) {
+        for (const i of sudokuValues) {
             if (this.list[i]) {
                 const v = this.list[i].hasDefinedValue();
                 if (v) {
@@ -247,9 +292,25 @@ export class SudokuCollection {
                 }
             }
         }
-        for (let i of sudokuValues) {
+        return counter;
+    }
+
+    public countValues(counter: number[]) {
+        for (const i of sudokuValues) {
+            if (this.list[i]) {
+                const v = this.list[i].hasDefinedValue();
+                if (v) {
+                    counter[v]++;
+                }
+            }
+        }
+    }
+
+    public showErrors() {
+        const counter = this.getModelsByValue();
+        for (const i of sudokuValues) {
             if (counter[i].length > 1) {
-                for (let m of counter[i]) {
+                for (const m of counter[i]) {
                     m.error = true;
                 }
             }
