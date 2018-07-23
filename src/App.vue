@@ -17,6 +17,17 @@
                                 :model="getModel(row, col)"
                                 v-on:clearActive="clearActive()"
                         />
+                        <td class="remainingField" style="width: 5px"></td>
+                        <td class="field remainingField">
+                            {{ sudoku.getRow(row).getUnassignedValuesInCollection().join(" ") }}
+                        </td>
+                    </tr>
+                    <tr style="height=5ox"></tr>
+                    <tr>
+                        <td class="field remainingField"
+                            v-for="col in values" :key="col">
+                            {{ sudoku.getCol(col).getUnassignedValuesInCollection().join(" ") }}
+                        </td>
                     </tr>
                 </table>
                 <br/>
@@ -124,6 +135,7 @@
         }
 
         public updatePossibleValues() {
+            this.sudoku.clearActive();
             this.helper.updatePossibleValues();
         }
 
@@ -202,6 +214,11 @@
         }
         tr:nth-child(3n) td {
             border-bottom-width: 3px;
+        }
+
+        .remainingField {
+            border: none;
+            font-size: xx-small;
         }
     }
 

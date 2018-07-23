@@ -286,19 +286,19 @@ export class SudokuCollection {
      * @return {SudokuFieldModel[][]}
      */
     public getModelsByValue() {
-        const counter: SudokuFieldModel[][] = [];
+        const valueList: SudokuFieldModel[][] = [];
         for (const i of sudokuValues) {
-            counter[i] = [];
+            valueList[i] = [];
         }
         for (const i of sudokuValues) {
             if (this.list[i]) {
                 const v = this.list[i].hasDefinedValue();
                 if (v) {
-                    counter[v].push(this.list[i]);
+                    valueList[v].push(this.list[i]);
                 }
             }
         }
-        return counter;
+        return valueList;
     }
 
     public countValues(counter: number[]) {
@@ -310,6 +310,17 @@ export class SudokuCollection {
                 }
             }
         }
+    }
+
+    public getUnassignedValuesInCollection(): SudokuValue[] {
+        const result: SudokuValue[] = [];
+        const valueList = this.getModelsByValue();
+        for (const value of sudokuValues) {
+            if (valueList[value].length === 0) {
+                result.push(value);
+            }
+        }
+        return result;
     }
 
     public showErrors() {

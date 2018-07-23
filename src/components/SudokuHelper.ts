@@ -10,7 +10,6 @@ export default class SudokuHelper {
      * for all cells that do not have a defined value
      */
     public updatePossibleValues() {
-        this.sudoku.clearActive();
         for (const row of sudokuValues) {
             for (const col of sudokuValues) {
                 const m = this.sudoku.getModel(row, col);
@@ -65,8 +64,8 @@ export default class SudokuHelper {
         this.assignAllSinglePossibleValueInCollection(this.sudoku.squares);
     }
 
-    // noinspection JSMethodCanBeStatic
     public assignAllSinglePossibleValueInCollection(collections: SudokuCollection[]) {
+        this.updatePossibleValues();
         for (const c of collections) {
             // check this collection if the position of each value can be uniquely identified
             for (const value of sudokuValues) {
@@ -81,8 +80,10 @@ export default class SudokuHelper {
                 if (positionsOfValue.length === 1) {
                     const m = positionsOfValue[0];
                     if (!m.hasDefinedValue()) {
+                        console.log(`${c.name} ${c.index} -> ${value}`);
                         m.setValue(value);
                         m.setHighlighted();
+                        this.updatePossibleValues();
                     }
                 }
             }
