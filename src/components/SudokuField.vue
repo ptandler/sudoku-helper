@@ -2,7 +2,7 @@
     <td :class="{ field: true,
         active: model.active,
         highlighted: model.highlighted,
-        error: model.error,
+        error: model.error || model.hasEmptyPossibleValueList(),
         predefined: model.predefined,
         defined: model.hasDefinedValue(),
         notDefined: ! model.hasDefinedValue()
@@ -21,7 +21,7 @@
     export default class SudokuField extends Vue {
         @Prop() private model: SudokuFieldModel;
 
-        activate() {
+        public activate() {
             this.$emit('clearActive');
             this.model.setActive();
         }

@@ -11,9 +11,9 @@
                 <table class="sudoku"
                        tabindex="1"
                        @keypress="onKeypress">
-                    <tr v-for="row in values">
+                    <tr v-for="row in values" :key="row">
                         <SudokuField
-                                v-for="col in values"
+                                v-for="col in values" :key="col"
                                 :model="getModel(row, col)"
                                 v-on:clearActive="clearActive()"
                         />
@@ -26,7 +26,10 @@
                         <br/>
                         <b-button @click="saveGame">Save to Local Storage</b-button>
                         <b-button @click="loadGame">Load from Local Storage</b-button>
-                        <b-button @click="showJSON" v-if="!exportedJSON">Show as JSON</b-button><b-button @click="hideJSON" v-else>Hide JSON</b-button>
+                    </b-button-group>
+                    <b-button-group>
+                        <b-button @click="showJSON" v-if="!exportedJSON">Show as JSON</b-button>
+                        <b-button @click="hideJSON" v-else>Hide JSON</b-button>
                         <b-button @click="resetGame">Clear</b-button>
                     </b-button-group>
                 </b-button-toolbar>
@@ -43,11 +46,15 @@
             </div>
             <div class="col-12 col-md-3">
                 <b-button-toolbar>
-                    <b-button-group vertical >
+                    <b-button-group vertical>
                         <b-button @click="showErrors">Show Errors</b-button>
                         <b-button @click="updatePossibleValues">Update Possible Values</b-button>
-                        <b-button @click="assignAllCellsWithSinglePossibleValue">Assign all Cells with Single Possible Value</b-button>
-                        <b-button @click="assignAllSinglePossibleValueInCollections">Assign Cells that have a Single Possible Value in all collections</b-button>
+                        <b-button @click="assignAllCellsWithSinglePossibleValue">Assign all Cells with Single Possible
+                            Value
+                        </b-button>
+                        <b-button @click="assignAllSinglePossibleValueInCollections">Assign Cells that have a Single
+                            Possible Value in all collections
+                        </b-button>
                     </b-button-group>
                 </b-button-toolbar>
             </div>
@@ -71,38 +78,40 @@
         },
     })
     export default class App extends Vue {
-        sudoku = new Sudoku();
-        helper = new SudokuHelper(this.sudoku);
-        showHelp = false;
-        exportedJSON = null;
-        values = sudokuValues;
+        protected sudoku = new Sudoku();
+        protected helper = new SudokuHelper(this.sudoku);
+        protected exportedJSON: string | null = null;
+        // noinspection JSUnusedGlobalSymbols
+        protected values = sudokuValues;
 
         constructor() {
             super();
             console.log(this);
         }
 
-        getModel(x: SudokuValue, y: SudokuValue) {
+        public getModel(x: SudokuValue, y: SudokuValue) {
             return this.sudoku.getModel(x, y);
         }
-        clearActive() {
+
+        public clearActive() {
             this.sudoku.clearActive();
         }
-        onKeypress(event) {
+
+        public onKeypress(event) {
             // console.log(event);
-            if (event.key >= "1" && event.key <= "9") {
+            if (event.key >= '1' && event.key <= '9') {
                 this.sudoku.hideErrors(); // this is no longer valid
                 this.sudoku.setValueOfActiveCell(event.key);
                 return;
             }
-            if (event.key == "0") {
+            if (event.key === '0') {
                 this.sudoku.hideErrors(); // this is no longer valid
-                for (let m of this.sudoku.getActiveCells()) {
+                for (const m of this.sudoku.getActiveCells()) {
                     m.removeDefinedValue();
                 }
             }
-            if (event.key === "d") {
-                for (let m of this.sudoku.getActiveCells()) {
+            if (event.key === 'd') {
+                for (const m of this.sudoku.getActiveCells()) {
                     m.predefined = !m.predefined;
                 }
                 return;
@@ -110,25 +119,29 @@
         }
 
         // helper functions
-        showErrors() {
+        public showErrors() {
             this.sudoku.showErrors();
         }
-        updatePossibleValues() {
+
+        public updatePossibleValues() {
             this.helper.updatePossibleValues();
         }
-        assignAllCellsWithSinglePossibleValue() {
+
+        public assignAllCellsWithSinglePossibleValue() {
             this.helper.assignAllCellsWithSinglePossibleValue();
         }
-        assignAllSinglePossibleValueInCollections() {
+
+        public assignAllSinglePossibleValueInCollections() {
             this.helper.assignAllSinglePossibleValueInCollections();
         }
 
         // organization functions
-        saveGame() {
+        public saveGame() {
             const json = this.sudoku.asJSON();
             localStorage.setItem('currentGame', json);
         }
-        loadGame() {
+
+        public loadGame() {
             try {
                 const json = localStorage.getItem('currentGame');
                 if (json) {
@@ -139,25 +152,24 @@
                 console.error(e);
             }
         }
-        resetGame() {
+
+        public resetGame() {
             this.sudoku.reset();
         }
 
-        showJSON() {
+        public showJSON() {
             this.exportedJSON = this.sudoku.asJSON();
         }
-        hideJSON() {
-            this.exportedJSON = null;
-        }
 
-        toggleHelp() {
-            this.showHelp = !this.showHelp;
+        public hideJSON() {
+            this.exportedJSON = null;
         }
     }
 </script>
 
 <style lang="scss">
     @import url('https://fonts.googleapis.com/css?family=PT+Sans');
+
     #app {
         font-family: 'PT Sans', 'Droid Sans', Helvetica, sans-serif;
         -webkit-font-smoothing: antialiased;
@@ -175,7 +187,8 @@
             border: 1px solid gray;
             padding: 3px;
             width: 50px;
-            height: 50px;        }
+            height: 50px;
+        }
 
         // make the bold lines for squares
         td:first-child {
@@ -195,6 +208,7 @@
     button {
         margin: 5px !important; // todo I thought bootstrap has a default margin for buttons ...?
     }
+
     // format of the vertial toolbar for rules
     .btn-group-vertical {
         button {

@@ -34,9 +34,9 @@ export class Sudoku {
     constructor() {
         // first init rows, cols and squares
         for (const i of sudokuValues) {
-            this.rows.push(new SudokuCollection());
-            this.cols.push(new SudokuCollection());
-            this.squares.push(new SudokuCollection());
+            this.rows.push(new SudokuCollection('Row', i));
+            this.cols.push(new SudokuCollection('Col', i));
+            this.squares.push(new SudokuCollection('Squ', i));
         }
 
         // console.log(this.rows);
@@ -184,6 +184,7 @@ export class SudokuFieldModel {
         this.highlighted = false;
         this.error = false;
     }
+
     public setValue(v: number) {
         if (v >= 1 && v <= 9) {
             this.value = v as SudokuValue;
@@ -217,6 +218,11 @@ export class SudokuFieldModel {
             return _.includes(this.value, val);
         }
         return false;
+    }
+
+    public hasEmptyPossibleValueList(): boolean {
+        const v = this.value;
+        return Sudoku.isSudokuValueList(v) && v.length === 0;
     }
 
     /**
@@ -263,7 +269,7 @@ export class SudokuFieldModel {
 export class SudokuCollection {
     public list: SudokuFieldModel[];
 
-    constructor() {
+    constructor(public name: string, public index: number) {
         this.list = [];
     }
 
