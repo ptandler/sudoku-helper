@@ -139,6 +139,24 @@ export class Sudoku {
         }
     }
 
+    /**
+     * reset all but predefined cell values
+     */
+    public restart() {
+        for (const row of sudokuValues) {
+            for (const col of sudokuValues) {
+                const m = this.getModel(row, col);
+                if (m.predefined) {
+                    m.active = false;
+                    m.highlighted = false;
+                    m.error = false;
+                } else {
+                    m.reset();
+                }
+            }
+        }
+    }
+
     public asJSON(): string {
         return JSON.stringify(this.matrix);
     }

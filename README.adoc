@@ -1,4 +1,6 @@
-= sudoku-helper
+= The Daft Sudoku Helper (sudoku-helper)
+
+A very simple tool written in TypeScript with Vue.js to help solving Sukodus (and to understand the rules to solve).
 
 Goal of this project:
 
@@ -23,15 +25,19 @@ _Well, yes, one might ask, what's the point when the App automatically applies t
 
 == ToDo-List / Ideas for Improvement
 
-- Animation if the value of a cell changes
-- Load and Save multiple games
-- add buttons / functions for more rules / heuristics
-- add support for touch-only devices to use without keyboard
-- auto mode: with Ctrl-Click on (some) buttons, automatically exec this action as soon as a value is changed (recursively); the button stays in the "pressed" mode then; will be deselected upon next click
+- Undo history
 - buttons to highlight a specific value (e.g. all cells with value "1")
+- auto mode: with Ctrl-Click on (some) buttons, automatically exec this action as soon as a value is changed (recursively); the button stays in the "pressed" mode then; will be deselected upon next click
+- Load and Save multiple games
+- Some import / export features (is there any widely adopted format? What about a simple JSON matrix in addition to the internal simplified JSON format?
+- Animation if the value of a cell changes
+- add buttons / functions for more rules / heuristics (are there more required?)
+- add support for touch-only devices to use without keyboard
 - include one of the sudoku generators (that can specify how easy / hard it should be)
 
-== Related Projects
+=== Related Projects & Sudoku Generators
+
+Just some I found written in JavaScript:
 
 - https://github.com/dachev/sudoku
 - https://github.com/hhelwich/sudoku-js

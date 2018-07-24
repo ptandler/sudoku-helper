@@ -1,8 +1,8 @@
 <template>
     <div id="app" class="container">
         <div class="row">
-            <div class="col-12">
-                <h1>Sudoku for Dummies</h1>
+            <div class="col-12 text-center">
+                <h1>The Daft Sudoku Helper</h1>
                 <p class="text-info">Get help to solve your Sudoku!</p>
             </div>
         </div>
@@ -33,24 +33,31 @@
                 <br/>
                 <b-button-toolbar>
                     <b-button-group>
-                        <b-button v-b-toggle.help>?</b-button>
+                        <b-button v-b-toggle.help v-b-tooltip title="Show some help, e.g. keyboard usage">?</b-button>
                         <br/>
-                        <b-button @click="saveGame">Save to Local Storage</b-button>
-                        <b-button @click="loadGame">Load from Local Storage</b-button>
+                        <b-button @click="saveGame" v-b-tooltip title="Save the current status to the browser's local storage">Save</b-button>
+                        <b-button @click="loadGame" v-b-tooltip title="Load the last saved game status from the browser's local storage">Load</b-button>
                     </b-button-group>
                     <b-button-group>
-                        <b-button @click="showJSON" v-if="!exportedJSON">Show as JSON</b-button>
-                        <b-button @click="hideJSON" v-else>Hide JSON</b-button>
-                        <b-button @click="resetGame">Clear</b-button>
+                        <!--<b-button @click="showJSON" v-if="!exportedJSON">Show as JSON</b-button>-->
+                        <!--<b-button @click="hideJSON" v-else>Hide JSON</b-button>-->
+                        <b-button @click="restartGame" v-b-tooltip title="Reset all values entered by you (not marked as 'predefined'">Restart</b-button>
+                        <b-button @click="clearGame" v-b-tooltip title="Remove everything, also predefined values">Clear</b-button>
                     </b-button-group>
                 </b-button-toolbar>
                 <b-collapse id="help">
                     <b-card>
-                        <p class="card-text text-left">
-                            Keyboard:<br/>
-                            1 ... 9: Change value of selected cell<br/>
-                            0: remove entered value of selected cell<br/>
-                            d: Mark cell as "predefined" (defined in the puzzle not by user)
+                        <p class="card-text">
+                            Sudoku-helper is a very simple tool that helps solving sudokus. You can e.g. use it for a game you are stuck with. Or you can solve the sudoku with <i>some</i> mouse clicks - which in fact might not really be exciting.
+                        </p>
+                        <p class="card-text">
+                            Use Keyboard to enter the values:<br/>
+                            <b>1 ... 9</b>: Change value of selected cell<br/>
+                            <b>0</b>: remove entered value of selected cell<br/>
+                            <b>d</b> or <b>*</b>: Mark cell as "predefined" (defined in the puzzle not inserted by yourself)
+                        </p>
+                        <p class="card-text">
+                            If you are stuck, you can use the helper functions to automatically apply some rules to get more values.
                         </p>
                     </b-card>
                 </b-collapse>
@@ -121,7 +128,7 @@
                     m.removeDefinedValue();
                 }
             }
-            if (event.key === 'd') {
+            if (event.key === 'd' || event.key === '*') {
                 for (const m of this.sudoku.getActiveCells()) {
                     m.predefined = !m.predefined;
                 }
@@ -165,8 +172,12 @@
             }
         }
 
-        public resetGame() {
+        public clearGame() {
             this.sudoku.reset();
+        }
+
+        public restartGame() {
+            this.sudoku.restart();
         }
 
         public showJSON() {
@@ -183,11 +194,9 @@
     @import url('https://fonts.googleapis.com/css?family=PT+Sans');
 
     #app {
-        font-family: 'PT Sans', 'Droid Sans', Helvetica, sans-serif;
+        font-family: 'PT Sans', Helvetica, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        text-align: center;
-        color: #2c3e50;
         margin-top: 60px;
     }
 
