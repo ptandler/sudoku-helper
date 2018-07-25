@@ -1,7 +1,7 @@
 {
   "name": "sudoku-helper",
   "short_name": "sudoku-helper",
-  "description": "A simple helper to solve sudoku puzzles :-)",
+  "description": "A very simple tool written in TypeScript with Vue.js to help solving Sukodus",
   "icons": [
     {
       "src": "/img/icons/android-chrome-192x192.png",

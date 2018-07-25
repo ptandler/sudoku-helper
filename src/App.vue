@@ -86,7 +86,7 @@
 
 <script lang="ts">
     import {Component, Vue} from 'vue-property-decorator';
-    import SudokuField from './components/SudokuField';
+    import SudokuField from './components/SudokuField.vue';
     import {SudokuValue, sudokuValues, Sudoku} from './components/Sudoku';
     import SudokuHelper from './components/SudokuHelper';
 
@@ -115,7 +115,8 @@
             this.sudoku.clearActive();
         }
 
-        public onKeypress(event) {
+        public onKeypress(event: any) {
+            // use `any` as param type here, as I have no idea if there is a KeyboardEvent type predefined somewhere ...
             // console.log(event);
             if (event.key >= '1' && event.key <= '9') {
                 this.sudoku.hideErrors(); // this is no longer valid

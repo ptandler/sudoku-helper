@@ -174,7 +174,82 @@ export class Sudoku {
     }
 }
 
+export class SudokuCollection {
+    public static dummyCollection = new SudokuCollection('dummy', 1);
+
+    public list: SudokuFieldModel[];
+
+    constructor(public name: string, public index: number) {
+        this.list = [];
+    }
+
+    public set(i: number /*SudokuValue*/, m: SudokuFieldModel) {
+        this.list[i] = m;
+    }
+
+    public get(i: number /*SudokuValue*/) {
+        return this.list[i];
+    }
+
+    /**
+     * return an array that lists for each value the models with this value
+     * @return {SudokuFieldModel[][]}
+     */
+    public getModelsByValue() {
+        const valueList: SudokuFieldModel[][] = [];
+        for (const i of sudokuValues) {
+            valueList[i] = [];
+        }
+        for (const i of sudokuValues) {
+            if (this.list[i]) {
+                const v = this.list[i].hasDefinedValue();
+                if (v) {
+                    valueList[v].push(this.list[i]);
+                }
+            }
+        }
+        return valueList;
+    }
+
+    public countValues(counter: number[]) {
+        for (const i of sudokuValues) {
+            if (this.list[i]) {
+                const v = this.list[i].hasDefinedValue();
+                if (v) {
+                    counter[v]++;
+                }
+            }
+        }
+    }
+
+    public getUnassignedValuesInCollection(): SudokuValue[] {
+        const result: SudokuValue[] = [];
+        const valueList = this.getModelsByValue();
+        for (const value of sudokuValues) {
+            if (valueList[value].length === 0) {
+                result.push(value);
+            }
+        }
+        return result;
+    }
+
+    public showErrors() {
+        const counter = this.getModelsByValue();
+        for (const i of sudokuValues) {
+            if (counter[i].length > 1) {
+                for (const m of counter[i]) {
+                    m.error = true;
+                }
+            }
+        }
+    }
+}
+
 export class SudokuFieldModel {
+    public static dummyModel = new SudokuFieldModel(1, 1,
+        SudokuCollection.dummyCollection, SudokuCollection.dummyCollection,
+        SudokuCollection.dummyCollection);
+
     public value: SudokuValue | SudokuValue[];
     public predefined: boolean = false;
     public active: boolean = false;
@@ -281,74 +356,5 @@ export class SudokuFieldModel {
             value: this.value,
             predefined: this.predefined,
         };
-    }
-}
-
-export class SudokuCollection {
-    public list: SudokuFieldModel[];
-
-    constructor(public name: string, public index: number) {
-        this.list = [];
-    }
-
-    public set(i: number /*SudokuValue*/, m: SudokuFieldModel) {
-        this.list[i] = m;
-    }
-
-    public get(i: number /*SudokuValue*/) {
-        return this.list[i];
-    }
-
-    /**
-     * return an array that lists for each value the models with this value
-     * @return {SudokuFieldModel[][]}
-     */
-    public getModelsByValue() {
-        const valueList: SudokuFieldModel[][] = [];
-        for (const i of sudokuValues) {
-            valueList[i] = [];
-        }
-        for (const i of sudokuValues) {
-            if (this.list[i]) {
-                const v = this.list[i].hasDefinedValue();
-                if (v) {
-                    valueList[v].push(this.list[i]);
-                }
-            }
-        }
-        return valueList;
-    }
-
-    public countValues(counter: number[]) {
-        for (const i of sudokuValues) {
-            if (this.list[i]) {
-                const v = this.list[i].hasDefinedValue();
-                if (v) {
-                    counter[v]++;
-                }
-            }
-        }
-    }
-
-    public getUnassignedValuesInCollection(): SudokuValue[] {
-        const result: SudokuValue[] = [];
-        const valueList = this.getModelsByValue();
-        for (const value of sudokuValues) {
-            if (valueList[value].length === 0) {
-                result.push(value);
-            }
-        }
-        return result;
-    }
-
-    public showErrors() {
-        const counter = this.getModelsByValue();
-        for (const i of sudokuValues) {
-            if (counter[i].length > 1) {
-                for (const m of counter[i]) {
-                    m.error = true;
-                }
-            }
-        }
     }
 }

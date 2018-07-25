@@ -1,7 +1,16 @@
 {
   "name": "sudoku-helper",
   "version": "0.1.0",
-  "private": true,
+  "description": "A very simple tool written in TypeScript with Vue.js to help solving Sukodus",
+  "keywords": ["javascript", "typescript", "vue.js", "sudoku"],
+  "homepage": "https://github.com/ptandler/sudoku-helper/",
+  "bugs": "https://github.com/ptandler/sudoku-helper/issues",
+  "license": "MIT",
+  "author": { "name": "Peter Tandler"
+  , "url": "https://github.com/ptandler"},
+  "repository": { "type": "git"
+  , "url": "https://github.com/ptandler/sudoku-helper.git"},
+  "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
