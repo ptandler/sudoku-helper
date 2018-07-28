@@ -45,22 +45,7 @@
                         <b-button @click="clearGame" v-b-tooltip title="Remove everything, also predefined values">Clear</b-button>
                     </b-button-group>
                 </b-button-toolbar>
-                <b-collapse id="help">
-                    <b-card>
-                        <p class="card-text">
-                            Sudoku-helper is a very simple tool that helps solving sudokus. You can e.g. use it for a game you are stuck with. Or you can solve the sudoku with <i>some</i> mouse clicks - which in fact might not really be exciting.
-                        </p>
-                        <p class="card-text">
-                            Use Keyboard to enter the values:<br/>
-                            <b>1 ... 9</b>: Change value of selected cell<br/>
-                            <b>0</b>: remove entered value of selected cell<br/>
-                            <b>d</b> or <b>*</b>: Mark cell as "predefined" (defined in the puzzle not inserted by yourself)
-                        </p>
-                        <p class="card-text">
-                            If you are stuck, you can use the helper functions to automatically apply some rules to get more values.
-                        </p>
-                    </b-card>
-                </b-collapse>
+                <HelpText id="help"/>
             </div>
             <div class="col-12 col-md-3">
                 <b-button-toolbar>
@@ -89,10 +74,11 @@
     import SudokuField from './components/SudokuField.vue';
     import {SudokuValue, sudokuValues, Sudoku} from './components/Sudoku';
     import SudokuHelper from './components/SudokuHelper';
+    import HelpText from './components/HelpText.vue';
 
     @Component({
         components: {
-            SudokuField,
+            SudokuField, HelpText,
         },
     })
     export default class App extends Vue {
