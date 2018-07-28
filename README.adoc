@@ -6,7 +6,9 @@ Goal of this project:
 
 1. I wanted a sample project to learn Vue.js and Typescript
 2. Do something I like while my family solves Sudokus ...
-3. A tool that can help interactively with complicated Sudoku puzzles, and helping me understand how far one gets while applying certain rules when solving a sudoku.
+3. A tool that can help interactively with complicated Sudoku puzzles, and helping me understand how far one gets while applying certain rules when solving a sudoku. (are there any other rules required than the ones implemented?)
+
+For a live demo see https://ptandler.github.io/sudoku-helper/
 
 == Features
 
