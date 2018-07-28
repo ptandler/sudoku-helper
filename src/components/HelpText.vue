@@ -13,6 +13,10 @@
             <p class="card-text">
                 If you are stuck, you can use the helper functions to automatically apply some rules to get more values.
             </p>
+            <p class="card-text">
+                For more information, to access source code, and to file bugs see
+                <a href="https://github.com/ptandler/sudoku-helper" target="_blank">github.com/ptandler/sudoku-helper</a>
+            </p>
         </b-card>
     </b-collapse>
 </template>
