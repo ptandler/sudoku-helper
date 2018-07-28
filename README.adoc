@@ -12,21 +12,24 @@ For a live demo see https://ptandler.github.io/sudoku-helper/
 
 == Features
 
+=== v0.1.1 (28.07.2018)
 - highlighting of the corresponding "collections" (i.e. a row, column, or square) a selected cell is contained in
 - save and load the game state
-- highligt errors
+- highlight errors
 
-=== Solution rules / heuristics that can be applied automatically
+==== Helpers & rules / heuristics that can be applied automatically
 
 _Well, yes, one might ask, what's the point when the App automatically applies the rules ... for me the fun is more in coding :-)_
 
+- show missing numbers in UI per row and col (no idea where to show the missing ones for each square ...)
 - Update the list of possible values in each cell (check that the rules all apply)
 - Assign all Cells with Single Possible Value (i.e. a list of possible values that has the length 1.
 - Assign Cells that have a Single Possible Value in all collections, i.e. check all rows, columns, and squares if there is a single position where a given value can be placed
-- show missing numbers in UI per row and col (no idea where to show the missing ones for each square ...)
 
 == ToDo-List / Ideas for Improvement
 
+- render "possible values" fields always as 3x3 matrix where each numer has a fixed position to be displayed at: [1 2 3][4 5 6][7 8 9]
+- optimize UI for small devices
 - Undo history
 - buttons to highlight a specific value (e.g. all cells with value "1")
 - auto mode: with Ctrl-Click on (some) buttons, automatically exec this action as soon as a value is changed (recursively); the button stays in the "pressed" mode then; will be deselected upon next click
