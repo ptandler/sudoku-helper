@@ -2,7 +2,7 @@
     <div id="app" class="container">
         <div class="row">
             <div class="col-12 text-center">
-                <h1>The Daft Sudoku Helper</h1>
+                <h1>The Stupid Simple Sudoku Helper</h1>
                 <p class="text-info">Get help to solve your Sudoku!</p>
             </div>
         </div>

@@ -19,7 +19,7 @@
 
     @Component
     export default class SudokuField extends Vue {
-        @Prop() private model: SudokuFieldModel = SudokuFieldModel.dummyModel;
+        @Prop() private model!: SudokuFieldModel;
 
         public activate() {
             this.$emit('clearActive');

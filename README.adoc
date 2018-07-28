@@ -1,4 +1,4 @@
-= The Daft Sudoku Helper (sudoku-helper)
+= The Stupid Simple Sudoku Helper (sudoku-helper)
 
 A very simple tool written in TypeScript with Vue.js to help solving Sukodus (and to understand the rules to solve).
 
