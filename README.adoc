@@ -12,6 +12,9 @@ For a live demo see https://ptandler.github.io/sudoku-helper/
 
 == Features
 
+=== v0.1.2 (29.07.2018)
+- corrected manifest.json issues
+
 === v0.1.1 (28.07.2018)
 - highlighting of the corresponding "collections" (i.e. a row, column, or square) a selected cell is contained in
 - save and load the game state

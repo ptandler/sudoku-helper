@@ -70,6 +70,7 @@
 </template>
 
 <script lang="ts">
+    /* tslint:disable:no-console */
     import {Component, Vue} from 'vue-property-decorator';
     import SudokuField from './components/SudokuField.vue';
     import {SudokuValue, sudokuValues, Sudoku} from './components/Sudoku';

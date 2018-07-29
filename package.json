@@ -1,6 +1,6 @@
 {
   "name": "sudoku-helper",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A very simple tool written in TypeScript with Vue.js to help solving Sukodus",
   "keywords": [
     "javascript",
