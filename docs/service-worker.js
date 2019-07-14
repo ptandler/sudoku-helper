@@ -11,10 +11,10 @@
  * See https://goo.gl/2aRDsh
  */
 
-importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.4.1/workbox-sw.js");
+importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.db2c270769e948c6dfb43396a0d59ecf.js"
+  "precache-manifest.a06a4b5947e3247ee1c0d3fc19806260.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "sudoku-helper"});
